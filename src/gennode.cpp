@@ -109,7 +109,7 @@ int read(vector<unsigned char>& seqtext,string filename){
 
 }
 
-/*
+
 int gentext(int_vector<8>& seqtext,string& seq){
     int num = 0;
     unsigned long insertpos = seqtext.size();
@@ -163,10 +163,7 @@ int gentext(int_vector<8>& seqtext,string& seq){
 
 
    return num;
-}i
-
-*/
-
+}
 void genquery(string& querytext,string& query){
    
     //unsigned long insertpos = seqtext.size();
@@ -306,11 +303,9 @@ void gencommon(string& commonstr,string lenfilename,string commonfilename){
 
 }
 
-int loadtree(string dbfile,vector<map<string,set<string> > >& taxtree,map<string,string>& gbkdir,string prefix,string leninfo){
+int loadtree(string dbfile,vector<map<string,set<string> > >& taxtree,map<string,string>& gbkdir,string prefix){
     string taxcode;
     taxtree.resize(6);
-    vector<int>lens;
-    vector<string>gis;
     ifstream db(dbfile.c_str());
     string line;
     int nodenum = 0;
@@ -320,7 +315,6 @@ int loadtree(string dbfile,vector<map<string,set<string> > >& taxtree,map<string
     
     
     int_vector<8>seq;
-    unsigned long oldlen= 0;
     while(!db.eof()){
         getline(db,line);
         if(line.length() == 0)break;
@@ -342,16 +336,13 @@ int loadtree(string dbfile,vector<map<string,set<string> > >& taxtree,map<string
         tax.push_back(info[4]);
         
         tax.push_back(info[1]);
-        
-        gis.push_back(info[1]);
+      
             
-        oldlen = seq.size();
-        //int unnormal = read_once(seq,filename);
-        lens.push_back(seq.size() - oldlen);
+
+        int unnormal = read_once(seq,filename);
         //if (unnormal>0)cout<<filename<<" "<<unnormal<<endl;
             
-        
-        //cout<<seq.size()<<endl;
+        cout<<seq.size()<<endl;
         
       
 
@@ -372,24 +363,17 @@ int loadtree(string dbfile,vector<map<string,set<string> > >& taxtree,map<string
             i++;
         }
    }
-   return 0;
    
-   ofstream fout(leninfo.c_str());
-   for(unsigned int i=0;i<gis.size();i++)
-       fout<<gis[i]<<" "<<lens[i]<<endl;
    
-   fout.close();
-   
-    
    int_vector<8>seqforsa;
    seqforsa.resize(seq.size());
    for(unsigned long i=0;i<seq.size();i++)
        seqforsa[i] = seq[i];
-      
+   
    cout<<(int)seq[2345]<<endl;
   
       
-   csa_wt<> csa;
+   csa_bitcompressed<> csa;
    for(unsigned long i = 0;i<seq.size();i++)
    {
         if( (int)seq[i] == 0)cout<<i<<endl;
@@ -397,7 +381,7 @@ int loadtree(string dbfile,vector<map<string,set<string> > >& taxtree,map<string
    }
    construct_im(csa,seq);
    cout<<size_in_mega_bytes(csa)<<endl;
-   store_to_file(csa,"pcomplete.csa");  
+   store_to_file(csa,"bitcomplete.csa");  
    return 0;
    string query;
    cin>>query;
@@ -427,8 +411,8 @@ int main(int argc,char* argv[]){
     vector<map<string,set<string> > > taxtree;
     map<string,string>gbkdir;
     taxtree.resize(6);
-    loadtree(argv[1],taxtree,gbkdir,argv[2],argv[3]);
-    //return 0;
+    loadtree(argv[1],taxtree,gbkdir,argv[2]);
+    return 0;
     for(int i=0;i<taxtree.size();i++)
         cout<<taxtree[i].size()<<endl;
 
@@ -443,7 +427,7 @@ int main(int argc,char* argv[]){
     Subphytree indextree;
     indextree.genTree(taxtree,gbkdir);
     string prefix(argv[2]);
-    indextree.commonsp(prefix,argv[4],argv[5]);         
+    indextree.common(prefix);         
     return 0;
 
 

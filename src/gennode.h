@@ -3,70 +3,12 @@
 #include<set>
 #include<stack>
 #include<algorithm>
-#include<omp.h>
-
-#include<sdsl/suffix_trees.hpp>
 #include"extractcommon.h"
+
+#define layer 3
 using namespace std;
-using namespace sdsl;
-/*
-int gentext(int_vector<8>& seqtext,string& seq){
-    int num = 0;
-    unsigned long insertpos = seqtext.size();
-    seqtext.resize(seqtext.size()+seq.size()+1);
 
 
-    uint8_t text=0,revcomp=0,temp=0;
-    int idx = 0;
-
-
-    for(size_t i=0;i<seq.length();i++){
-
-
-
-        switch(seq[i]){
-            //case 'a': text[i] = 1;break;
-            case 'A': temp = 0;break;
-            case 'C': temp = 1;break;
-            case 'T': temp = 2;break;
-            case 'G': temp = 3;break;
-            default: temp = 4;num++;
-
-        }
-
-                if(temp<4){
-                        text= (text<<2) | temp;
-                        //revcomp = revcomp | temp<<(2*idx);
-
-                        idx++;
-                        if(idx>2){
-                                seqtext[insertpos] =text + 1;
-                                //seqtext[insertpos] =text<revcomp?text:revcomp + 1;
-                                insertpos++;
-                                text = 0;
-                                revcomp = 0;
-                                idx = 0;
-                        }
-                }
-
-
-
-    }
-
-        if(idx !=0){
-                seqtext[insertpos] = text + 1;
-            insertpos++;
-        }
-    seqtext[insertpos] = 65;
-    if(seqtext.size()>(insertpos+1) )
-        seqtext.resize(insertpos+1);
-
-
-   return num;
-}
-
-
-*/
 
 string findcommon_seq(vector<string> dirs){
 	
@@ -126,7 +68,7 @@ public:
 	int leafnum;
 	
 	string dir;
-        string gi;
+	string commonstr;
 	
 };
 
@@ -158,6 +100,7 @@ class Subphytree{
 public:
 	vector<commonnode*> commontree; 
 	vector<string> commonstring;
+	vector<vector<int> > taxonomy;
 	pathtree heavy;
 	map<int,string> id_name;
 
@@ -173,8 +116,8 @@ public:
 	void preorder();
 	
 	void sortchild();
+
 	void common(string prefix);	
-        void commonsp(string prefix,string dbfile,string outdir);
 	~Subphytree(){
 		for(int i=0;i<commontree.size();i++)
 			delete commontree[i];
@@ -215,7 +158,7 @@ void Subphytree::genTree(vector<map<string,set<string> > >& taxtree,map<string,s
 					 node->isLeaf = true;
 					 node->leafnum = 1;
 					 node->dir = gbkdir[*itr2];
-					 node->gi = *itr2;
+					 
 					 
 					 parentnode->children.push_back(node);
 					 node->parent = parentnode;
@@ -347,133 +290,65 @@ void Subphytree::common(string prefix){
                        vector<string>dirs;
                        for(unsigned int j=0;j<commontree[spnode[i]]->children.size();j++)
                            dirs.push_back(commontree[spnode[i]]->children[j]->dir);
-                       //extract(dirs,prefix);
+                       extract(dirs,prefix);
                }
        }
        
 	
 }
-void Subphytree::commonsp(string prefix,string dbfile,string outdir){
-      ifstream dbtax(dbfile.c_str());
-      string gi,ti,sp,ge,fa,ord;
-      map<string,string>gisp;
-      while(dbtax>>gi>>ti>>sp>>ge>>fa>>ord){
-          gisp[gi] = sp;
-      }
-      dbtax.close();
-
-      map<string,vector<string> > refspdir;
-      for(unsigned int i=0;i<commontree.size();i++)
-               for(unsigned int j=0;j<commontree[i]->children.size();j++)
-                       if(commontree[i]->children[j]->isLeaf){
-                               string gi = commontree[i]->children[j]->gi;
-                               if(gisp.find(gi) == gisp.end())
-                                   continue;
-                               string sp = gisp[gi];
-                               refspdir[sp].push_back(commontree[i]->children[j]->dir);
-                               
-                       }
-      cout<<"sp num: "<<refspdir.size()<<endl;
-      int num = 0;
-      
-      vector<pair<string,vector<string> > > spdirforomp;
- 
-      for(map<string,vector<string> >::iterator itr = refspdir.begin();itr!=refspdir.end();itr++){
-          spdirforomp.push_back(make_pair(itr->first,itr->second));
-          num += itr->second.size();
-      }
-      cout<<num<<endl;
-      
-      
-
-      csa_bitcompressed<>csa;
-      csa_wt<>csawt;
-      //load_from_file(csa,"gesp.csa");
-      
-
-      int_vector<16>belong;
-
-      ofstream spseq("spseq.txt");
-      
-      vector<string>spnums(spdirforomp.size());
-      vector<int_vector<8> >results(spdirforomp.size()); 
-      #pragma omp parallel for
-      for(unsigned int i = 0;i<spdirforomp.size();i++){
-          if(spdirforomp[i].second.size()<2)continue;
-         
-          cout<<"sp "<<spdirforomp[i].first<<" "<<spdirforomp[i].second.size()<<endl;
-          vector<string>dirs;
-          for(unsigned int j=0;j<spdirforomp[i].second.size();j++)
-              dirs.push_back(spdirforomp[i].second[j]);
-          
-          
-          extract(dirs,prefix,outdir,spdirforomp[i].first,results[i]);
-          if(results[i].size() !=0)spnums[i] = spdirforomp[i].first;
-      }
-      cout<<"sum up"<<endl;      
-      //ofstream gespcommon("gesp.index");
-      int_vector<8> seqtext;
-      uint64_t oldlen = 0;
-      uint64_t idx = 0;
-      uint16_t clade = 0;
-      for(unsigned int i=0;i<results.size();i++){
-          if(results[i].size() == 0)
-              continue;
-          spseq<<spnums[i]<<endl;
-          oldlen = seqtext.size();
-          seqtext.resize(seqtext.size()+results[i].size());
-          belong.resize(seqtext.size());
-          for(idx=oldlen;idx<seqtext.size();idx++){
-              belong[idx] = clade;
-              seqtext[idx] = results[i][idx-oldlen];
-          }
-          clade++;
-          
-          cout<<seqtext.size()<<endl;
-              
-          
-      }
-
-      
-      spseq.close();
-      /*(
-      vector<uint16_t>table(csa.size());
-      table[0] = 0;
-
-      for(uint64_t i = 1;i<csa.size();i++)
-          table[i] = belong[csa[i]];  
-
-         
-      ofstream fout("tablege");
-      for(uint64_t i = 1;i<csa.size();i++)
-          fout<<table[i]<<" ";
-      fout<<endl;
-      fout.close();
-      */
-      cout<<"wt"<<endl;
-      csa_wt<>wt;
-
-      
-      construct_im(wt,seqtext);
-      store_to_file(wt,"sp.csawt");
-
-      cout<<"csa"<<endl;
-      //csa_bitcompressed<>csa;
-      construct_im(csa,seqtext);
-      store_to_file(csa,"sp.csa");
-      
-      vector<uint16_t>table(csa.size());
-      table[0] = 0;
-
-      for(uint64_t i = 1;i<csa.size();i++)
-          table[i] = belong[csa[i]];
 
 
-      ofstream fout("tablespt");
-      for(uint64_t i = 1;i<csa.size();i++)
-          fout<<table[i]<<" ";
-      fout<<endl;
-      fout.close();
-      
-      
+void Subphytree::init_common(map<string,string>& gidir,map<string,vector<string> >&dbtax,int maxlevel ){
+	   map<string,commonnode*>tempmap;
+       for(map<string,string>::iterator itr=gidir.begin();itr!=gidir.end();itr++){
+       	   commonnode* leafnode = new commonnode;
+           leafnode->isLeaf = true;
+           leafnode->leafnum = 1;
+           leafnode->dir=itr->second;
+           tempmap[itr->first] = leafnode;
+
+       }
+       for(map<string,vector<string> >::iterator itr = dbtax.begin();itr!=dbtax.end();itr++){
+       	   commonnode* leafnode = tempmap[itr->first];
+       	   for(unsigned int i=0;i<level;i++){
+       	   	   map<string,commonnode*>::iterator itr2 = tempmap.find(itr->second[level]);
+       	   	   if(itr2==tempmap.end()){
+       	   	   	   commonnode* parentnode = new commonnode;
+       	   	   	   tempmap[itr->second[level]] = parentnode;
+       	   	   	   parentnode->children.push_back(leafnode);
+       	   	   	   parentnode->isLeaf = false;
+       	   	   	   parentnode->leafnum=1;
+       	   	   }
+       	   	   else{
+       	   	   	   commonnode* parentnode = itr2->second;
+       	   	   	   parentnode->children.push_back(leafnode);
+       	   	   	   parentnode->isLeaf = false;
+       	   	   	   parentnode->leafnum++;
+       	   	   }
+       	   }
+       }
+       root = tempmap[taxtree[0].begin()->first];
+       cout<<tempmap.size()<<endl;
+       preorder();
+       for(map<string,commonnode*>::iterator itr=tempmap.begin();itr!=tempmap.end();itr++){
+		   id_name[itr->second->id] = itr->first;
+	   } 
 }
+
+
+void Subphytree::tree_common(string prefix){
+       for(unsigned int i=0;i<layer;i++){
+       	    for(unsigned int j = 0;j<taxonomy[i].size();j++){
+       	    	commonnode* taxnode = commontree[taxonomy[i][j]];
+                vector<string>dirs;
+       	    	for(unsigned int child = 0;child<taxnode->children.size();child++){
+       	    		dirs.push_back(taxnode->children[child]->dir);
+       	    	}
+       	    	extract(taxnode->dir,taxnode->children[chile]->dir,dirs,prefix);
+       	    }
+       }
+}
+
+
+
+
