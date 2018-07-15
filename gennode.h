@@ -110,7 +110,7 @@ public:
 	void genTree(vector<map<string,set<string> > >& taxtree,map<string,string>& gbkdir);
     
 	void tree_common(string prefix);
-	void Subphytree::init_common(map<string,string>& gidir,map<string,vector<string> >&dbtax,unsigned int maxlevel,string dbprefix,string commonprefix );
+	void init_common(map<string,string>& gidir,map<string,vector<string> >&dbtax,unsigned int maxlevel,string dbprefix,string commonprefix );
     void heavyPath();
 	
 	void preorder();
@@ -339,7 +339,7 @@ void Subphytree::init_common(map<string,string>& gidir,map<string,vector<string>
        	   	   	   parentnode->children.push_back(childnode);
        	   	   	   parentnode->isLeaf = false;
        	   	   	   parentnode->leafnum=1;
-       	   	       parentnode->dir =  commonprefix+"/"+itr->second[level]+".common"
+       	   	       parentnode->dir =  commonprefix+"/"+itr->second[level]+".common";
        	   	   }
        	   	   else{
        	   	   	   parentnode = itr2->second;
