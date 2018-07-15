@@ -306,7 +306,7 @@ void Subphytree::common(string prefix){
 }
 
 
-void Subphytree::init_common(map<string,string>& gidir,map<string,vector<string> >&dbtax,int maxlevel,string dbprefix,string commonprefix ){
+void Subphytree::init_common(map<string,string>& gidir,map<string,vector<string> >&dbtax,unsigned int maxlevel,string dbprefix,string commonprefix ){
 
        //init taxonomy
 	   for(unsigned int i=0;i<maxlevel;i++){
@@ -326,7 +326,7 @@ void Subphytree::init_common(map<string,string>& gidir,map<string,vector<string>
        //construct internal nodes (taxonomy)
        for(map<string,vector<string> >::iterator itr = dbtax.begin();itr!=dbtax.end();itr++){
        	   commonnode* childnode = tempmap[itr->first];
-       	   for(unsigned int i=0;i<level;i++){
+       	   for(unsigned int level=0;level<maxlevel;level++){
 
        	   	   if (itr->second[level] == 'NA')
        	   	   	   continue;
@@ -350,8 +350,8 @@ void Subphytree::init_common(map<string,string>& gidir,map<string,vector<string>
        	   	   childnode = parentnode;
        	   }
        }
-       root = tempmap[taxtree[0].begin()->first];
-       cout<<tempmap.size()<<endl;
+       root = tempmap["1"];
+       cout<<"db size： "<<tempmap.size()<<endl;
        preorder();
        for(map<string,commonnode*>::iterator itr=tempmap.begin();itr!=tempmap.end();itr++){
 		   id_name[itr->second->id] = itr->first;
