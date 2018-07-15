@@ -328,7 +328,7 @@ void Subphytree::init_common(map<string,string>& gidir,map<string,vector<string>
        	   commonnode* childnode = tempmap[itr->first];
        	   for(unsigned int level=0;level<maxlevel;level++){
 
-       	   	   if (itr->second[level] == 'NA')
+       	   	   if (itr->second[level] == "NA")
        	   	   	   continue;
        	   	   taxonomy[level].insert(itr->second[level]);
        	   	   map<string,commonnode*>::iterator itr2 = tempmap.find(itr->second[level]);
@@ -339,7 +339,7 @@ void Subphytree::init_common(map<string,string>& gidir,map<string,vector<string>
        	   	   	   parentnode->children.push_back(childnode);
        	   	   	   parentnode->isLeaf = false;
        	   	   	   parentnode->leafnum=1;
-       	   	       parentnode->dir =  commonprefix+"/"+itr->second[level]+'.common'
+       	   	       parentnode->dir =  commonprefix+"/"+itr->second[level]+".common"
        	   	   }
        	   	   else{
        	   	   	   parentnode = itr2->second;
