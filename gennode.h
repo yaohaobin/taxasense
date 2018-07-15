@@ -110,7 +110,7 @@ public:
 	void genTree(vector<map<string,set<string> > >& taxtree,map<string,string>& gbkdir);
     
 	void tree_common(string prefix);
-	void init_common(map<string,string>& gidir,map<string,vector<string> >&dbtax,int maxlevel );
+	void Subphytree::init_common(map<string,string>& gidir,map<string,vector<string> >&dbtax,int maxlevel,string dbprefix,string commonprefix );
     void heavyPath();
 	
 	void preorder();
@@ -119,7 +119,7 @@ public:
 
 	void common(string prefix);	
 
-	void readdb(string dbfile,string taxfile,map<string,string>$ gidir,map<string,vector<string> >& dbtax,int maxlevel);
+	void readdb(string dbfile,string taxfile,map<string,string>& gidir,map<string,vector<string> >& dbtax,int maxlevel);
 	~Subphytree(){
 		for(int i=0;i<commontree.size();i++)
 			delete commontree[i];
@@ -276,9 +276,9 @@ void Subphytree::heavyPath(){
 		
 }
 
-void readdb(string dbfile,string taxfile,map<string,string>$ gidir,map<string,vector<string> >& dbtax,int maxlevel){
+void Subphytree::readdb(string dbfile,string taxfile,map<string,string>& gidir,map<string,vector<string> >& dbtax,int maxlevel){
        ifstream db(dbfile.c_str());
-       ifstream taxfile(gifile.c_str());
+       ifstream tax(taxfile.c_str());
        
 
 
@@ -298,7 +298,7 @@ void Subphytree::common(string prefix){
                        vector<string>dirs;
                        for(unsigned int j=0;j<commontree[spnode[i]]->children.size();j++)
                            dirs.push_back(commontree[spnode[i]]->children[j]->dir);
-                       extract(dirs,prefix);
+                       //extract(dirs,prefix);
                }
        }
        
@@ -363,14 +363,14 @@ void Subphytree::init_common(map<string,string>& gidir,map<string,vector<string>
 void Subphytree::tree_common(string prefix){
        for(unsigned int i=0;i<layer;i++){
 
-       	    for(unsigned int j = 0;j<taxonomy[i].size();j++){
+       	    for(set<string>::iterator itr = taxonomy[i].begin();itr!=taxonomy[i].end();itr++){
 
-       	    	commonnode* taxnode = commontree[taxonomy[i][j]];
+       	    	commonnode* taxnode = commontree[taxid[*itr]];
                 vector<string>dirs;
        	    	for(unsigned int child = 0;child<taxnode->children.size();child++){
        	    		dirs.push_back(taxnode->children[child]->dir);
        	    	}
-       	    	extract(taxnode->dir,taxnode->children[child]->dir,dirs,prefix);
+       	    	extract(taxnode->dir,dirs,prefix);
        	    }
        }
 }
