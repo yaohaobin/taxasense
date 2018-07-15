@@ -4,7 +4,10 @@
 #include<stack>
 #include<algorithm>
 #include"extractcommon.h"
+
+#define layer 3
 using namespace std;
+
 string findcommon_seq(vector<string> dirs){
 	
 	cout<<dirs.size()<<endl;
@@ -63,6 +66,7 @@ public:
 	int leafnum;
 	
 	string dir;
+	string commonstr;
 	
 };
 
@@ -94,22 +98,28 @@ class Subphytree{
 public:
 	vector<commonnode*> commontree; 
 	vector<string> commonstring;
+	vector<set<string> >taxonomy;
 	pathtree heavy;
 	map<int,string> id_name;
-
+    map<string,int> tax_id;
    
 	
 	commonnode* root;
 	int rootid;
 	
 	void genTree(vector<map<string,set<string> > >& taxtree,map<string,string>& gbkdir);
-	
+    
+	void tree_common(string prefix);
+	void init_common(map<string,string>& gidir,map<string,vector<string> >&dbtax,int maxlevel );
     void heavyPath();
 	
 	void preorder();
 	
 	void sortchild();
+
 	void common(string prefix);	
+
+	void readdb(string dbfile,string taxfile,map<string,string>$ gidir,map<string,vector<string> >& dbtax,int maxlevel);
 	~Subphytree(){
 		for(int i=0;i<commontree.size();i++)
 			delete commontree[i];
@@ -196,7 +206,7 @@ void Subphytree::preorder(){
 	label(root,0);
 	sortchild();
 
-        heavyPath();
+        //heavyPath();
 }
 
 int Subphytree::label(commonnode* node,int idx){
@@ -266,7 +276,13 @@ void Subphytree::heavyPath(){
 		
 }
 
+void readdb(string dbfile,string taxfile,map<string,string>$ gidir,map<string,vector<string> >& dbtax,int maxlevel){
+       ifstream db(dbfile.c_str());
+       ifstream taxfile(gifile.c_str());
+       
 
+
+}
 void Subphytree::common(string prefix){
        vector<int>spnode;
        for(unsigned int i=0;i<commontree.size();i++)
@@ -287,6 +303,76 @@ void Subphytree::common(string prefix){
        }
        
 	
+}
+
+
+void Subphytree::init_common(map<string,string>& gidir,map<string,vector<string> >&dbtax,int maxlevel,string dbprefix,string commonprefix ){
+
+       //init taxonomy
+	   for(unsigned int i=0;i<maxlevel;i++){
+	   	   set<string> emptylayer;
+	   	   taxonomy.push_back(emptylayer);
+	   }
+	   //construct leaf (sequence)
+	   map<string,commonnode*>tempmap;
+       for(map<string,string>::iterator itr=gidir.begin();itr!=gidir.end();itr++){
+       	   commonnode* leafnode = new commonnode;
+           leafnode->isLeaf = true;
+           leafnode->leafnum = 1;
+           leafnode->dir=dbprefix+"/"+itr->second;
+           tempmap[itr->first] = leafnode;
+
+       }
+       //construct internal nodes (taxonomy)
+       for(map<string,vector<string> >::iterator itr = dbtax.begin();itr!=dbtax.end();itr++){
+       	   commonnode* childnode = tempmap[itr->first];
+       	   for(unsigned int i=0;i<level;i++){
+
+       	   	   if (itr->second[level] == 'NA')
+       	   	   	   continue;
+       	   	   taxonomy[level].insert(itr->second[level]);
+       	   	   map<string,commonnode*>::iterator itr2 = tempmap.find(itr->second[level]);
+       	   	   commonnode* parentnode;
+       	   	   if(itr2==tempmap.end()){
+       	   	   	   parentnode = new commonnode;
+       	   	   	   tempmap[itr->second[level]] = parentnode;
+       	   	   	   parentnode->children.push_back(childnode);
+       	   	   	   parentnode->isLeaf = false;
+       	   	   	   parentnode->leafnum=1;
+       	   	       parentnode->dir =  commonprefix+"/"+itr->second[level]+'.common'
+       	   	   }
+       	   	   else{
+       	   	   	   parentnode = itr2->second;
+       	   	   	   parentnode->children.push_back(childnode);
+       	   	   	
+       	   	   	   parentnode->leafnum+=childnode->leafnum;
+       	   	   }
+       	   	   childnode = parentnode;
+       	   }
+       }
+       root = tempmap[taxtree[0].begin()->first];
+       cout<<tempmap.size()<<endl;
+       preorder();
+       for(map<string,commonnode*>::iterator itr=tempmap.begin();itr!=tempmap.end();itr++){
+		   id_name[itr->second->id] = itr->first;
+		   tax_id[itr->first] = itr->second->id;
+	   } 
+}
+
+
+void Subphytree::tree_common(string prefix){
+       for(unsigned int i=0;i<layer;i++){
+
+       	    for(unsigned int j = 0;j<taxonomy[i].size();j++){
+
+       	    	commonnode* taxnode = commontree[taxonomy[i][j]];
+                vector<string>dirs;
+       	    	for(unsigned int child = 0;child<taxnode->children.size();child++){
+       	    		dirs.push_back(taxnode->children[child]->dir);
+       	    	}
+       	    	extract(taxnode->dir,taxnode->children[child]->dir,dirs,prefix);
+       	    }
+       }
 }
 
 
