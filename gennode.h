@@ -340,19 +340,19 @@ void Subphytree::init_common(map<string,string>& gidir,map<string,vector<string>
        	   	   map<string,commonnode*>::iterator itr2 = tempmap.find(itr->second[level]);
        	   	   commonnode* parentnode;
        	   	   if(itr2==tempmap.end()){
-       	   	   	   cout<<"new"<<endl;
+       	   	   	   
        	   	   	   parentnode = new commonnode;
        	   	   	   tempmap[itr->second[level]] = parentnode;
        	   	   	   parentnode->children.push_back(childnode);
        	   	   	   parentnode->isLeaf = false;
-       	   	   	   parentnode->leafnum=1;
+       	   	   	   //parentnode->leafnum=1;
        	   	       parentnode->dir =  commonprefix+"/"+itr->second[level]+".common";
        	   	   }
        	   	   else{
        	   	   	   parentnode = itr2->second;
        	   	   	   parentnode->children.push_back(childnode);
-       	   	   	
-       	   	   	   parentnode->leafnum+=childnode->leafnum;
+       	   	   	   break;
+       	   	   	   //parentnode->leafnum+=childnode->leafnum;
        	   	   }
        	   	   childnode = parentnode;
        	   }
