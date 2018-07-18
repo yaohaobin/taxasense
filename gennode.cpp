@@ -10,7 +10,7 @@
 
 #include <sdsl/suffix_trees.hpp>
 #define N 2
-#define maxlevel 7
+#define maxlevel 8
 
 using namespace std;
 using namespace sdsl;
@@ -353,7 +353,9 @@ int loadtree(string dbfile,map<string,vector<string> >&wholetax,map<string,vecto
         if(tax.size() == 0)continue;
         if(tax[0] !="Bacteria") continue;
    
+        if(wholetax.find(info[1]) == wholetax.end())continue;
         gbkdir[info[1]] = filename;
+
         dbtax[info[1]] = wholetax[info[1]];
                     
         
