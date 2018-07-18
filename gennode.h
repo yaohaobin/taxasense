@@ -351,6 +351,7 @@ void Subphytree::init_common(map<string,string>& gidir,map<string,vector<string>
        	   	   else{
        	   	   	   
        	   	   	   parentnode = itr2->second;
+       	   	   	   cout<<childnode->dir<<endl;
                    cout<<parentnode->isLeaf<<endl;
        	   	   	   parentnode->children.push_back(childnode);
        	   	   	   break;
