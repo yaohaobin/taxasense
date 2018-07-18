@@ -331,6 +331,7 @@ void Subphytree::init_common(map<string,string>& gidir,map<string,vector<string>
        cout<<"temp size: "<<tempmap.size()<<endl;
        //construct internal nodes (taxonomy)
        for(map<string,vector<string> >::iterator itr = dbtax.begin();itr!=dbtax.end();itr++){
+       	   cout<<"temp size: "<<tempmap.size()<<endl;
        	   commonnode* childnode = tempmap[itr->first];
        	   for(unsigned int level=0;level<maxlevel;level++){
                cout<<"level: "<<level<<" "<<itr->second[level]<<endl;
