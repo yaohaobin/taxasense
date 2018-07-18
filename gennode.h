@@ -204,7 +204,7 @@ void Subphytree::preorder(){
 	
         	
 	label(root,0);
-	//sortchild();
+	sortchild();
 
         //heavyPath();
 }
@@ -219,11 +219,12 @@ int Subphytree::label(commonnode* node,int idx){
 		        commontree.push_back(child);
 			child->id = idx;
 			idx++;
+			node->leafnum++;
 		}
 		else{
                         //cout<<i<<endl;
 			idx = label(child,idx);
-			
+			node->leafnum+=child->leafnum;
 			idx++;
 		}							
 	}
@@ -365,7 +366,7 @@ void Subphytree::init_common(map<string,string>& gidir,map<string,vector<string>
        	   }
        }
        root = tempmap["1"];
-       cout<<"db size： "<<tempmap.size()<<endl;
+       cout<<"db size: "<<tempmap.size()<<endl;
        preorder();
        for(map<string,commonnode*>::iterator itr=tempmap.begin();itr!=tempmap.end();itr++){
 		   id_name[itr->second->id] = itr->first;
