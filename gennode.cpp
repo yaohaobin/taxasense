@@ -110,7 +110,7 @@ int read(vector<unsigned char>& seqtext,string filename){
 
 }
 
-
+/*
 int gentext(int_vector<8>& seqtext,string& seq){
     int num = 0;
     unsigned long insertpos = seqtext.size();
@@ -165,6 +165,8 @@ int gentext(int_vector<8>& seqtext,string& seq){
 
    return num;
 }
+*/
+
 void genquery(string& querytext,string& query){
    
     //unsigned long insertpos = seqtext.size();
@@ -428,7 +430,7 @@ int main(int argc,char* argv[]){
 
     //indextree.genTree(taxtree,gbkdir);
     //string prefix(argv[2]);
-    indextree.       
+      
     return 0;
 
 
