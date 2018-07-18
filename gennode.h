@@ -333,13 +333,14 @@ void Subphytree::init_common(map<string,string>& gidir,map<string,vector<string>
        for(map<string,vector<string> >::iterator itr = dbtax.begin();itr!=dbtax.end();itr++){
        	   commonnode* childnode = tempmap[itr->first];
        	   for(unsigned int level=0;level<maxlevel;level++){
-               cout<<"level: "<<level<<endl;
+               cout<<"level: "<<level<<" "<<itr->second[level]<<endl;
        	   	   if (itr->second[level] == "NA")
        	   	   	   continue;
        	   	   taxonomy[level].insert(itr->second[level]);
        	   	   map<string,commonnode*>::iterator itr2 = tempmap.find(itr->second[level]);
        	   	   commonnode* parentnode;
        	   	   if(itr2==tempmap.end()){
+       	   	   	   cout<<"new"<<endl;
        	   	   	   parentnode = new commonnode;
        	   	   	   tempmap[itr->second[level]] = parentnode;
        	   	   	   parentnode->children.push_back(childnode);
