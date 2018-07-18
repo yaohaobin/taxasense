@@ -349,6 +349,7 @@ void Subphytree::init_common(map<string,string>& gidir,map<string,vector<string>
        	   	       parentnode->dir =  commonprefix+"/"+itr->second[level]+".common";
        	   	   }
        	   	   else{
+       	   	   	   cout<<itr2->first<<endl;
        	   	   	   parentnode = itr2->second;
        	   	   	   parentnode->children.push_back(childnode);
        	   	   	   break;
