@@ -109,7 +109,7 @@ public:
 	
 	void genTree(vector<map<string,set<string> > >& taxtree,map<string,string>& gbkdir);
     
-	void tree_common(string prefix);
+	void tree_common();
 	void init_common(map<string,string>& gidir,map<string,vector<string> >&dbtax,unsigned int maxlevel,string dbprefix,string commonprefix );
     void heavyPath();
 	
@@ -183,7 +183,7 @@ void Subphytree::genTree(vector<map<string,set<string> > >& taxtree,map<string,s
     }
     
 	root = tempmap[taxtree[0].begin()->first];
-        cout<<tempmap.size()<<endl; 
+    cout<<tempmap.size()<<endl; 
         	
 	preorder();
 	
@@ -279,6 +279,8 @@ void Subphytree::heavyPath(){
 void Subphytree::readdb(string dbfile,string taxfile,map<string,string>& gidir,map<string,vector<string> >& dbtax,int maxlevel){
        ifstream db(dbfile.c_str());
        ifstream tax(taxfile.c_str());
+
+    
        
 
 
@@ -313,6 +315,8 @@ void Subphytree::init_common(map<string,string>& gidir,map<string,vector<string>
 	   	   set<string> emptylayer;
 	   	   taxonomy.push_back(emptylayer);
 	   }
+
+
 	   //construct leaf (sequence)
 	   map<string,commonnode*>tempmap;
        for(map<string,string>::iterator itr=gidir.begin();itr!=gidir.end();itr++){
@@ -323,6 +327,8 @@ void Subphytree::init_common(map<string,string>& gidir,map<string,vector<string>
            tempmap[itr->first] = leafnode;
 
        }
+
+       cout<<"temp size: "<<tempmap.size()<<endl;
        //construct internal nodes (taxonomy)
        for(map<string,vector<string> >::iterator itr = dbtax.begin();itr!=dbtax.end();itr++){
        	   commonnode* childnode = tempmap[itr->first];
@@ -360,7 +366,7 @@ void Subphytree::init_common(map<string,string>& gidir,map<string,vector<string>
 }
 
 
-void Subphytree::tree_common(string prefix){
+void Subphytree::tree_common(){
        for(unsigned int i=0;i<layer;i++){
 
        	    for(set<string>::iterator itr = taxonomy[i].begin();itr!=taxonomy[i].end();itr++){
