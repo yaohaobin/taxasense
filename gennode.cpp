@@ -10,6 +10,7 @@
 
 #include <sdsl/suffix_trees.hpp>
 #define N 2
+#define maxlevel 7
 
 using namespace std;
 using namespace sdsl;
@@ -303,9 +304,27 @@ void gencommon(string& commonstr,string lenfilename,string commonfilename){
 
 }
 
-int loadtree(string dbfile,vector<map<string,set<string> > >& taxtree,map<string,string>& gbkdir,string prefix){
-    string taxcode;
-    taxtree.resize(6);
+void readwholetax(string taxfile,map<string,vector<string> >&wholetax){
+
+    ifstream taxin(taxfile.c_str());
+    string gi,ti,taxid;
+    while(taxin>>gi){
+        taxin>>ti;
+        vector<string>taxpath;
+        for(int i=0;i<maxlevel;i++){
+            taxin>>taxid;
+            taxpath.push_back(taxid);
+        }
+        wholetax[gi] = taxpath;
+
+    }
+
+    taxin.close();
+}
+
+int loadtree(string dbfile,map<string,vector<string> >&wholetax,map<string,vector<string> >&dbtax,map<string,string>& gbkdir,string prefix){
+    
+    
     ifstream db(dbfile.c_str());
     string line;
     int nodenum = 0;
@@ -324,7 +343,6 @@ int loadtree(string dbfile,vector<map<string,set<string> > >& taxtree,map<string
         if (complete <0)continue; 
 
         string filename = prefix+'/'+info[5]+'/'+info[0]+".fa";
-        gbkdir[info[1]] = filename;
         
 
         vector<string> tax;
@@ -332,39 +350,22 @@ int loadtree(string dbfile,vector<map<string,set<string> > >& taxtree,map<string
         split(info[2],';',tax);
         if(tax.size() == 0)continue;
         if(tax[0] !="Bacteria") continue;
-        uniqtax(tax);
-        tax.push_back(info[4]);
+   
+        gbkdir[info[1]] = filename;
+        dbtax[info[1]] = wholetax[info[1]];
+                    
         
-        tax.push_back(info[1]);
-      
-            
-
-        int unnormal = read_once(seq,filename);
+        //int unnormal = read_once(seq,filename);
         //if (unnormal>0)cout<<filename<<" "<<unnormal<<endl;
             
-        cout<<seq.size()<<endl;
+        //cout<<seq.size()<<endl;
         
       
 
-        int i=0; 
-        if (tax.size()-1 > taxtree.size() ) taxtree.resize(tax.size()-1);
-        for(vector<string>::iterator itr=tax.begin();(itr+1)!=tax.end();itr++){
-            if ( (*itr).length() == 0)
-                cout<< line <<endl;    
-            if (taxtree[i].find(*itr) != taxtree[i].end())
-                taxtree[i][*itr].insert(*(itr+1));
-            else{
-
-                set<string> newparent;
-                newparent.insert(*(itr+1));
-                taxtree[i][*itr] = newparent;
-            }
-            
-            i++;
-        }
+        
    }
    
-   
+   return 0;
    int_vector<8>seqforsa;
    seqforsa.resize(seq.size());
    for(unsigned long i=0;i<seq.size();i++)
@@ -382,7 +383,7 @@ int loadtree(string dbfile,vector<map<string,set<string> > >& taxtree,map<string
    construct_im(csa,seq);
    cout<<size_in_mega_bytes(csa)<<endl;
    store_to_file(csa,"bitcomplete.csa");  
-   return 0;
+   
    string query;
    cin>>query;
    string querytext="";
@@ -408,26 +409,26 @@ int main(int argc,char* argv[]){
     //string commonstr="";
     //string lenfilename(argv[1]);
     //string commonfilename(argv[2]);
-    vector<map<string,set<string> > > taxtree;
+    if(argc !=5){
+        cerr<<"usage: gennode wholetaxfile dbfile dbdirprefix commonstr_output_prefix"<<endl;
+        return 0;
+    } 
+    map<string,vector<string> >  wholetax,dbtax;
     map<string,string>gbkdir;
-    taxtree.resize(6);
-    loadtree(argv[1],taxtree,gbkdir,argv[2]);
-    return 0;
-    for(int i=0;i<taxtree.size();i++)
-        cout<<taxtree[i].size()<<endl;
-
-    int level = taxtree.size()-1;   
-    cout<<"last"<<endl;
-    for(map<string,set<string> >::iterator itr = taxtree[level].begin();itr !=taxtree[level].end();itr++){
-        cout<<itr->first<<" "<<itr->second.size()<<endl;
-        
-    }   
     
-    cout<<"node"<<endl;
+    readwholetax(argv[1],wholetax);
+    loadtree(argv[2],wholetax,dbtax,gbkdir,argv[3]);
+    
+    
+    
+   
     Subphytree indextree;
-    indextree.genTree(taxtree,gbkdir);
-    string prefix(argv[2]);
-    indextree.common(prefix);         
+
+    indextree.init_common(gbkdir,dbtax,maxlevel,argv[3],argv[4]);
+
+    //indextree.genTree(taxtree,gbkdir);
+    //string prefix(argv[2]);
+    indextree.       
     return 0;
 
 
