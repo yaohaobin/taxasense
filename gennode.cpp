@@ -427,6 +427,7 @@ int main(int argc,char* argv[]){
     loadtree(argv[2],wholetax,dbtax,gbkdir,argv[3]);
     
     
+    
     cout<<"db size: "<<dbtax.size()<<endl;
    
     Subphytree indextree;
