@@ -419,10 +419,13 @@ int main(int argc,char* argv[]){
     map<string,string>gbkdir;
     
     readwholetax(argv[1],wholetax);
+
+    cout<<"wholedbsize: "<<wholetax.size()<<endl;
+
     loadtree(argv[2],wholetax,dbtax,gbkdir,argv[3]);
     
     
-    
+    cout<<"db size: "<<dbtax.size()<<endl;
    
     Subphytree indextree;
 
