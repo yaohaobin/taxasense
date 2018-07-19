@@ -3,6 +3,7 @@
 #include<set>
 #include<stack>
 #include<algorithm>
+#include<omp.h>
 #include"extractcommon.h"
 
 #define layer 3
