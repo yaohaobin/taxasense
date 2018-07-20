@@ -397,7 +397,7 @@ void Subphytree::tree_common(){
        	    	for(unsigned int child = 0;child<taxnode->children.size();child++){
        	    		info.childrendir.push_back(taxnode->children[child]->dir);
        	    	}
-       	    	if(nodeinfo.childrendir.size() >= 2){
+       	    	if(info.childrendir.size() >= 2){
        	    	    
        	    	    layerblock.push_back(info);
        	    	}
@@ -405,7 +405,7 @@ void Subphytree::tree_common(){
        	    }
        	    #pragma omp parallel for
        	    for(unsigned int j=0;j<layerblock.size();j++){
-       	    	cout<<layerblock[i].parentdir<<" "<<layerblock.childrendir.size()<<endl;
+       	    	cout<<layerblock[i].parentdir<<" "<<layerblock[i].childrendir.size()<<endl;
        	    }
        }
 }
