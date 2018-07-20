@@ -391,14 +391,15 @@ void Subphytree::tree_common(){
        	    for(set<string>::iterator itr = taxonomy[i].begin();itr!=taxonomy[i].end();itr++){
 
        	    	commonnode* taxnode = commontree[tax_id[*itr]];
-                nodeinfo.parentdir = taxnode->dir;
-                nodeinfo.taxid = *itr;
+       	    	nodeinfo info;
+                info.parentdir = taxnode->dir;
+                info.taxid = *itr;
        	    	for(unsigned int child = 0;child<taxnode->children.size();child++){
-       	    		nodeinfo.childrendir.push_back(taxnode->children[child]->dir);
+       	    		info.childrendir.push_back(taxnode->children[child]->dir);
        	    	}
        	    	if(nodeinfo.childrendir.size() >= 2){
        	    	    
-       	    	    layerblock.push_back(nodeinfo);
+       	    	    layerblock.push_back(info);
        	    	}
        	    	//extract(taxnode->dir,dirs,prefix);
        	    }
