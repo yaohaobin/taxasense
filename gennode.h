@@ -385,7 +385,7 @@ void Subphytree::init_common(map<string,string>& gidir,map<string,vector<string>
 
 
 void Subphytree::tree_common(){
-       for(unsigned int i=0;i<1;i++){
+       for(unsigned int i=1;i<2;i++){
             vector<nodeinfo> layerblock;
        
        	    for(set<string>::iterator itr = taxonomy[i].begin();itr!=taxonomy[i].end();itr++){
