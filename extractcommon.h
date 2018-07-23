@@ -8,7 +8,7 @@
 #include<stdlib.h>
 
 #include <sdsl/suffix_trees.hpp>
-#include <extractdiff.h>
+
 using namespace std;
 using namespace sdsl;
 
