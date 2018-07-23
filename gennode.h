@@ -395,6 +395,7 @@ void Subphytree::tree_common(){
                 info.parentdir = taxnode->dir;
                 info.taxid = *itr;
        	    	for(unsigned int child = 0;child<taxnode->children.size();child++){
+       	    		cout<<taxnode->children[child]->dir<<endl;
        	    		info.childrendir.push_back(taxnode->children[child]->dir);
        	    	}
        	    	if(info.childrendir.size() >= 2){
