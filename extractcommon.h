@@ -199,7 +199,7 @@ void gencommon(vector<string>& seqs,string outdir,string taxid){
     if(lastdepth != 0){
         if(common[lastpos] < lastdepth) common[lastpos] = lastdepth;
     }
-    string outfile = outdir+".fa";
+    string outfile = outdir;
     ofstream fout(outfile.c_str());
     fout<<">"<<taxid<<endl;
 
