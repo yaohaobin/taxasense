@@ -391,3 +391,18 @@ void extract(string parentdir,vector<string>&dirs,unsigned int layer,string taxi
     
 }
 
+void cp(string source,string destination){
+
+    ifstream seqfile(source.c_str());
+    ofstream resultfile(destination.c_str());
+    string line;
+    getline(seqfile,line);
+    resultfile<<line<<endl;
+    string seq = "";
+    while(seqfile>>line)
+            resultfile<<line<<endl;
+    seqfile.close();
+    resultfile.close();
+
+
+}
