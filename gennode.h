@@ -410,7 +410,7 @@ void Subphytree::tree_common(){
        	    }
        	    if(i==0)
        	        continue;
-       	    //#pragma omp parallel for
+       	    #pragma omp parallel for
 
        	    for(unsigned int j=0;j<layerblock.size();j++){
        	    	cout<<layerblock[j].parentdir<<" "<<layerblock[j].childrendir.size()<<endl;
