@@ -5,7 +5,7 @@
 #include<algorithm>
 #include<omp.h>
 #include"extractcommon.h"
-
+#include"extractdiff.h"
 #define layer 3
 using namespace std;
 
@@ -57,6 +57,7 @@ class nodeinfo{
 public:
 	string parentdir;
 	vector<string>childrendir;
+	vector<string>childrentax;
 	string taxid;
 
 
@@ -385,7 +386,7 @@ void Subphytree::init_common(map<string,string>& gidir,map<string,vector<string>
 
 
 void Subphytree::tree_common(){
-       for(unsigned int i=0;i<3;i++){
+       for(unsigned int i=0;i<2;i++){
             vector<nodeinfo> layerblock;
        
        	    for(set<string>::iterator itr = taxonomy[i].begin();itr!=taxonomy[i].end();itr++){
@@ -394,9 +395,11 @@ void Subphytree::tree_common(){
        	    	nodeinfo info;
                 info.parentdir = taxnode->dir;
                 info.taxid = *itr;
+
        	    	for(unsigned int child = 0;child<taxnode->children.size();child++){
        	    		//cout<<taxnode->children[child]->dir<<endl;
        	    		info.childrendir.push_back(taxnode->children[child]->dir);
+       	    		info.childrentax.push_back(id_name[ taxnode->children[child]->id ]);
        	    	}
        	    	if(info.childrendir.size() >= 2){
        	    	    
@@ -408,14 +411,18 @@ void Subphytree::tree_common(){
        	    	}
        	    	//extract(taxnode->dir,dirs,prefix);
        	    }
-       	    if(i<=1)
+       	    if(i<==0)
        	        continue;
        	    //#pragma omp parallel for
 
        	    for(unsigned int j=0;j<layerblock.size();j++){
        	    	cout<<layerblock[j].parentdir<<" "<<layerblock[j].childrendir.size()<<endl;
 
-       	    	extract(layerblock[j].parentdir,layerblock[j].childrendir,i,layerblock[j].taxid);
+
+       	    	//extract(layerblock[j].parentdir,layerblock[j].childrendir,i,layerblock[j].taxid);
+       	    	extractdiff(layerblock[j].parentdir,layerblock[j].childrendir,layerblock[j].childrentax);
+
+
        	    }
        }
 }
