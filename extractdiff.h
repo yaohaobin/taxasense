@@ -53,6 +53,9 @@ void extract_diff(string& large, string& small,string outdir){
                 
             }
         lastnodedepth = cst.node_depth(v);
+
+        if(cst.depth(v)<9)
+                continue;
         uint8_t idx = 1;
         uint64_t rankr = wt.rank(cst.rb(v),idx);
         uint64_t rankl = wt.rank(cst.lb(v),idx);
