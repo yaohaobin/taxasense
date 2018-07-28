@@ -79,7 +79,7 @@ void extract_diff(string& large, string& small,string outdir){
         if(common[i] != 0){
             startpos = i + 1 - common[i];
          
-            fout<<seqtext.substr(startpos,common[i])+"$"<<endl;
+            fout<<query.substr(startpos,common[i])+"$"<<endl;
             if(common[i] > max)
                 max = common[i];
             mean = (mean*num+common[i])/(num+1);
