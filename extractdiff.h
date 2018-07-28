@@ -20,7 +20,7 @@ void extract_diff(string& large, string& small,string outdir){
 
     string query = large + "$" + small;
 
-    int_vector<2> belong(cst.size(),0);
+    int_vector<1> belong(cst.size(),0);
 
     for(uint32_t i = large.length();i<cst.csa.size();i++)
     	belong[i]=1;
