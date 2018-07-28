@@ -31,7 +31,7 @@ void extract_diff(string& large, string& small,string outdir){
     for(unsigned long int i = 1;i<cst.csa.size();i++)
              table[i] = belong[cst.csa[i]];
 
-    belong.resize(0)；
+    belong.resize(0);
     wt_huff<>wt;
     construct_im(wt,table);
     table.resize(0);
@@ -117,7 +117,7 @@ void extractdiff(string parentdir,vector<string>& dirs,vector<string>& childrent
             seq+=line;
         seqfile.close();
         cout<<"childseq len: "<<seq.length()<<endl;    
-        extract_diff(childseq,parentseq,childrentax[i]);    
+        extract_diff(seq,parentseq,childrentax[i]);    
         
      }
         

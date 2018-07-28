@@ -411,7 +411,7 @@ void Subphytree::tree_common(){
        	    	}
        	    	//extract(taxnode->dir,dirs,prefix);
        	    }
-       	    if(i<==0)
+       	    if(i==0)
        	        continue;
        	    //#pragma omp parallel for
 
