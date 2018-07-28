@@ -15,7 +15,7 @@ using namespace sdsl;
 
 
 
-void extract_diff(string& large, string& small,string ourdir){
+void extract_diff(string& large, string& small,string outdir){
     cst_sct3<csa_bitcompressed<>> cst;
 
     string query = large + "$" + small;
@@ -72,11 +72,14 @@ void extract_diff(string& large, string& small,string ourdir){
     if(lastdepth != 0){
         if(common[lastpos] < lastdepth) common[lastpos] = lastdepth;
     }
-    string outfile = outd".uni";
+    string outfile = outdir+".uni.fa";
     ofstream fout(outfile.c_str());
+    uint64_t startpos;
     for(uint64_t i = 0;i<common.size();i++)
         if(common[i] != 0){
-            fout<<i<<" "<<(int)common[i]<<endl;
+            startpos = i + 1 - common[i];
+         
+            fout<<seqtext.substr(startpos,common[i])+"$"<<endl;
             if(common[i] > max)
                 max = common[i];
             mean = (mean*num+common[i])/(num+1);
@@ -94,6 +97,28 @@ void extract_diff(string& large, string& small,string ourdir){
 
 }
 
-void extractdiff(string parentdir,vector<string>& dirs){
-	
+void extractdiff(string parentdir,vector<string>& dirs,vector<string>& childrentax){
+    ifstream parentfile(parentdir.c_str());
+    string nextline;
+    string parentseq = "";
+    getline(parentfile,nextline);
+    while(parentfile>>nextline)
+    	parentseq+=nextline;
+    parentfile.close();
+    cout<<"parentseq len: "<<parentseq.length()<<endl;
+
+    for(unsigned i = 0;i<dirs.size();i++){
+        string filename = dirs[i];
+        ifstream seqfile(filename.c_str());
+        string line;
+        getline(seqfile,line);
+        string seq = "";
+        while(seqfile>>line)
+            seq+=line;
+        seqfile.close();
+        cout<<"childseq len: "<<seq.length()<<endl;    
+        extract_diff(childseq,parentseq,childrentax[i]);    
+        
+     }
+        
 }
