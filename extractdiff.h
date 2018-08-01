@@ -13,7 +13,7 @@ using namespace std;
 using namespace sdsl;
 
 
-bool compair(pair<int,int>& p1,pair<int,int>&p2){
+bool compair(pair<uint32_t,uint32_t>& p1,pair<uint32_t,uint32_t>&p2){
     return p1.first<p2.first;
 }
 
