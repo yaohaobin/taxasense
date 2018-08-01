@@ -13,6 +13,9 @@ using namespace std;
 using namespace sdsl;
 
 
+bool compair(pair<int,int>& p1,pair<int,int>&p2){
+    return p1.first<p2.first;
+}
 
 void merge_interval(vector<pair<uint32_t,uint32_t> >&intervals,vector<pair<uint32_t,uint32_t> >&merged){
    
@@ -90,7 +93,7 @@ void extract_diff(string& large, string& small,string outdir){
             lastdepth = cst.depth(v);
             lastpos = cst.csa[cst.lb(v)] + lastdepth - 1;
         }
-        esle{
+        else{
         	it.skip_subtree();
         }
 

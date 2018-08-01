@@ -20,33 +20,8 @@ string findcommon_node(vector<int>& children,vector<string >&commonstring){
 	
 	return ""+(char)children.size();
 }
-bool compair(pair<int,int>& p1,pair<int,int>&p2){
-    return p1.first<p2.first;
-}
 
-void merge_interval(vector<pair<int,int> >&intervals,vector<pair<int,int> >&merged){
-   
-     if(intervals.size() <= 1)return;
-     sort(intervals.begin(),intervals.end(),compair);
-     stack<pair<int,int> > stack_merge;
-     stack_merge.push(intervals[0]);
-     for(unsigned i = 1;i<intervals.size();i++){
-         pair<int,int>top_pair = stack_merge.top();
-         if(stack_merge.top().second >= intervals[i].first){
-             stack_merge.pop();
-             stack_merge.push( make_pair(top_pair.first,intervals[i].second) );
 
-         }
-         else
-            stack_merge.push( intervals[i]);
-     }
-
-     merged.resize(stack_merge.size());
-     for(unsigned i= 0;i<stack_merge.size();i++){
-         merged[i] = stack_merge.top();
-         stack_merge.pop();
-     }
-}
 string get_seq(string dir){
 	
 	return dir; 
