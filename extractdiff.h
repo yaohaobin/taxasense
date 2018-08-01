@@ -14,6 +14,30 @@ using namespace sdsl;
 
 
 
+void merge_interval(vector<pair<uint32_t,uint32_t> >&intervals,vector<pair<uint32_t,uint32_t> >&merged){
+   
+     if(intervals.size() <= 1)return;
+     sort(intervals.begin(),intervals.end(),compair);
+     stack<pair<uint32_t,uint32_t> > stack_merge;
+     stack_merge.push(intervals[0]);
+     for(unsigned i = 1;i<intervals.size();i++){
+         pair<uint32_t,uint32_t>top_pair = stack_merge.top();
+         if(stack_merge.top().second >= intervals[i].first){
+             stack_merge.pop();
+             stack_merge.push( make_pair(top_pair.first,intervals[i].second) );
+
+         }
+         else
+            stack_merge.push( intervals[i]);
+     }
+
+     merged.resize(stack_merge.size());
+     for(unsigned i= 0;i<stack_merge.size();i++){
+         merged[i] = stack_merge.top();
+         stack_merge.pop();
+     }
+}
+
 
 void extract_diff(string& large, string& small,string outdir){
     cst_sct3<csa_bitcompressed<>> cst;
@@ -66,6 +90,9 @@ void extract_diff(string& large, string& small,string outdir){
             lastdepth = cst.depth(v);
             lastpos = cst.csa[cst.lb(v)] + lastdepth - 1;
         }
+        esle{
+        	it.skip_subtree();
+        }
 
         if(cst.depth(v) >=100 )
         	it.skip_subtree();
@@ -77,11 +104,13 @@ void extract_diff(string& large, string& small,string outdir){
     }
     string outfile = outdir+".uni.fa";
     ofstream fout(outfile.c_str());
-    uint64_t startpos;
-    for(uint64_t i = 0;i<common.size();i++)
+
+    vector<pair<uint32_t,uint32_t> >intervals,merged;
+    uint32_t startpos;
+    for(uint32_t i = 0;i<large.size();i++)
         if(common[i] != 0){
             startpos = i + 1 - common[i];
-         
+            intervals.push_back(make_pair(startpos,i));
             fout<<query.substr(startpos,common[i])+"$"<<endl;
             if(common[i] > max)
                 max = common[i];
