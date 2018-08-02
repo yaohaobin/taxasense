@@ -105,7 +105,7 @@ void extract_diff(string& large, string& small,string outdir){
     if(lastdepth != 0){
         if(common[lastpos] < lastdepth) common[lastpos] = lastdepth;
     }
-    string outfile = outdir+".uni.fa";
+    string outfile = "uni"+outdir+".fa";
     ofstream fout(outfile.c_str());
 
     vector<pair<uint32_t,uint32_t> >intervals,merged;
@@ -114,12 +114,17 @@ void extract_diff(string& large, string& small,string outdir){
         if(common[i] != 0){
             startpos = i + 1 - common[i];
             intervals.push_back(make_pair(startpos,i));
-            fout<<query.substr(startpos,common[i])+"$"<<endl;
+            //fout<<query.substr(startpos,common[i])+"$"<<endl;
             if(common[i] > max)
                 max = common[i];
             mean = (mean*num+common[i])/(num+1);
             num++;
        }
+
+    merge_interval(intervals,merged);
+
+    for(uint32_t i=0;i<merged.size();i++)
+    	fout<<query.substr(merged[i].first,merged[i].second - merged[i].first + 1)<<endl;
     fout.close();
     cout<<"mean: "<<mean<<" num "<<num<<" max "<<max<<endl;
 

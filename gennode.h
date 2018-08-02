@@ -356,11 +356,11 @@ void Subphytree::init_common(map<string,string>& gidir,map<string,vector<string>
 		   id_name[itr->second->id] = itr->first;
 		   tax_id[itr->first] = itr->second->id;
 	   } 
-	   tree_common();
+	   tree_common(commonprefix);
 }
 
 
-void Subphytree::tree_common(){
+void Subphytree::tree_common(string outputprefix){
        for(unsigned int i=0;i<2;i++){
             vector<nodeinfo> layerblock;
        
@@ -374,7 +374,7 @@ void Subphytree::tree_common(){
        	    	for(unsigned int child = 0;child<taxnode->children.size();child++){
        	    		//cout<<taxnode->children[child]->dir<<endl;
        	    		info.childrendir.push_back(taxnode->children[child]->dir);
-       	    		info.childrentax.push_back(id_name[ taxnode->children[child]->id ]);
+       	    		info.childrentax.push_back(outputprefix+'/'+id_name[ taxnode->children[child]->id ]);
        	    	}
        	    	if(info.childrendir.size() >= 2){
        	    	    
