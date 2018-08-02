@@ -105,7 +105,7 @@ void extract_diff(string& large, string& small,string outdir){
     if(lastdepth != 0){
         if(common[lastpos] < lastdepth) common[lastpos] = lastdepth;
     }
-    string outfile = "uni"+outdir+".fa";
+    string outfile = outdir+".uni.fa";
     ofstream fout(outfile.c_str());
 
     vector<pair<uint32_t,uint32_t> >intervals,merged;
