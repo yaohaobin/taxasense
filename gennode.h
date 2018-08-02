@@ -93,7 +93,7 @@ public:
 	
 	void genTree(vector<map<string,set<string> > >& taxtree,map<string,string>& gbkdir);
     
-	void tree_common();
+	void tree_common(string outputprefix);
 	void init_common(map<string,string>& gidir,map<string,vector<string> >&dbtax,unsigned int maxlevel,string dbprefix,string commonprefix );
     void heavyPath();
 	
