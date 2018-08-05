@@ -157,7 +157,7 @@ void extractdiff(string parentdir,vector<string>& dirs,vector<string>& childrent
             seq+=line;
         seqfile.close();
         cout<<"childseq len: "<<seq.length()<<endl; 
-        cout<<"output dir: "<<childrentax<<endl;   
+        cout<<"output dir: "<<childrentax[i]<<endl;   
         extract_diff(seq,parentseq,childrentax[i]);    
         
      }
