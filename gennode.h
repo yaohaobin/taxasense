@@ -361,7 +361,7 @@ void Subphytree::init_common(map<string,string>& gidir,map<string,vector<string>
 
 
 void Subphytree::tree_common(string outputprefix){
-       for(unsigned int i=0;i<2;i++){
+       for(unsigned int i=0;i<3;i++){
             vector<nodeinfo> layerblock;
        
        	    for(set<string>::iterator itr = taxonomy[i].begin();itr!=taxonomy[i].end();itr++){
@@ -374,7 +374,8 @@ void Subphytree::tree_common(string outputprefix){
        	    	for(unsigned int child = 0;child<taxnode->children.size();child++){
        	    		//cout<<taxnode->children[child]->dir<<endl;
        	    		info.childrendir.push_back(taxnode->children[child]->dir);
-       	    		info.childrentax.push_back(outputprefix+"/uni/"+id_name[ taxnode->children[child]->id ]+"uni.fa");
+       	    		info.childrentax.push_back(outputprefix+"/uni/"+id_name[ taxnode->children[child]->id ]+".uni.fa");
+
        	    	}
        	    	if(info.childrendir.size() >= 2){
        	    	    
@@ -386,7 +387,7 @@ void Subphytree::tree_common(string outputprefix){
        	    	}
        	    	//extract(taxnode->dir,dirs,prefix);
        	    }
-       	    if(i==0)
+       	    if(i<=1)
        	        continue;
        	    #pragma omp parallel for
 
