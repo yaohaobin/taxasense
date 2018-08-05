@@ -105,7 +105,7 @@ void extract_diff(string& large, string& small,string outdir){
     if(lastdepth != 0){
         if(common[lastpos] < lastdepth) common[lastpos] = lastdepth;
     }
-    string outfile = outdir+".uni.fa";
+    string outfile = outdir;
     ofstream fout(outfile.c_str());
 
     vector<pair<uint32_t,uint32_t> >intervals,merged;
@@ -156,7 +156,8 @@ void extractdiff(string parentdir,vector<string>& dirs,vector<string>& childrent
         while(seqfile>>line)
             seq+=line;
         seqfile.close();
-        cout<<"childseq len: "<<seq.length()<<endl;    
+        cout<<"childseq len: "<<seq.length()<<endl; 
+        cout<<"output dir: "<<childrentax<<endl;   
         extract_diff(seq,parentseq,childrentax[i]);    
         
      }

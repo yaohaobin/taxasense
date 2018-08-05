@@ -374,7 +374,7 @@ void Subphytree::tree_common(string outputprefix){
        	    	for(unsigned int child = 0;child<taxnode->children.size();child++){
        	    		//cout<<taxnode->children[child]->dir<<endl;
        	    		info.childrendir.push_back(taxnode->children[child]->dir);
-       	    		info.childrentax.push_back(outputprefix+'/'+id_name[ taxnode->children[child]->id ]);
+       	    		info.childrentax.push_back(outputprefix+"/uni/"+id_name[ taxnode->children[child]->id ]+"uni.fa");
        	    	}
        	    	if(info.childrendir.size() >= 2){
        	    	    
