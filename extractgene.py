@@ -4,6 +4,8 @@ from Bio.Seq import Seq
 from Bio.SeqFeature import SeqFeature
 from Bio.SeqRecord import SeqRecord
 import os.path
+from multiprocessing import Pool
+
 def parsegbk(filename):
     gbfile = open(filename,'r')
   
@@ -24,6 +26,21 @@ def processdir(args,dirname,filenames):
 		    print dirname+'/'+filename
 		    parsegbk(dirname+'/'+filename)
 
-os.path.walk(sys.argv[1],processdir,None)
+
+def job(filename):
+	return filename
 
 
+gbklist = []
+for fpath,dirname,filename in os.path.walk(sys.argv[1]):
+	info = filename.rstrip().split('.')
+	if info[len(info)-1] == 'gbk':
+		gbklist.append(dirname+'/'+filename)
+print len(gbklist)
+
+p = Pool(6)
+
+results = p.map(job,gbklist)
+
+print len(results)
+print results[0]
