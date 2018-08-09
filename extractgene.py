@@ -11,7 +11,7 @@ def parsegbk(filename):
 	    for f in record.features:
 		    if f.type == 'CDS':
 			    if 'gene' in f.qualifiers:
-				    protid = f.qualifiers['protein_id'][0]:
+				    protid = f.qualifiers['protein_id'][0]
 			        geneid = f.qualifiers['gene'][0]
 				    print protid+'\t'+geneid+'\t'+str(len(f.location.extract(record)))
 
